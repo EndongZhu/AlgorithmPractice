@@ -1,24 +1,30 @@
-bool wordBreak(string s, vector<string>& wordDict) {
-    int dict_size = wordDict.size() ;
-    int len = s.size() ;
-    if(len == 0)
-        return true ;
-    if(dict_size == 0)
-        return false ;
-    bool dp[len+1] = {0} ;
-    dp[0] = 1 ;
-    for(int i = 1; i <= len; i++)
-    {
-        for(int j = 0; j < dict_size; j++)
-        {
-            int item_len = wordDict[j].size() ;
-            if(i-item_len >= 0 && dp[i-item_len])
-            {
-                string s_sub = s.substr(i-item_len, item_len) ;
-                if(s_sub == wordDict[j])
-                    dp[i] = 1;
-            }
-        }
+class Solution {
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        unordered_set<string> dict(wordDict.begin(), wordDict.end());
+        return helper(s, dict);
     }
-    return dp[len] ;
-}
+
+    bool helper(string s, unordered_set<string>& wordDict) {
+        if (mem.find(s) != mem.end()) {
+            return mem[s];
+        }
+        if (wordDict.find(s) != wordDict.end()) {
+            mem[s] = true;
+            return true;
+        }
+        for (int i = 0; i < s.size(); i++) {
+            string new_s = s.substr(0, i+1);
+            if (wordDict.find(new_s) != wordDict.end()
+                && helper(s.substr(i+1), wordDict)) {
+                mem[new_s] = true;
+                return true;
+            }
+            mem[new_s] = false;
+        }
+        mem[new_s] = false;
+        return false;
+    }
+private:
+    unordered_map<string, bool> mem;
+};

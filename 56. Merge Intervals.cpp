@@ -1,31 +1,24 @@
-struct Interval {
-    int start;
-    int end;
-    Interval() : start(0), end(0) {}
-    Interval(int s, int e) : start(s), end(e) {}
-};
-
-static bool a_less_b(const Interval& a,const Interval& b)  
-{  
-    return a.start < b.start ;  
-} 
-
-vector<Interval> merge(vector<Interval>& intervals) 
-{
-	sort(intervals.begin(), intervals.end(), a_less_b) ;
-
-	int len = intervals.size() ;
-	for(int i = 1 ; i < len ; i++)
-	{
-		Interval last = intervals[i-1] ;
-		Interval cur = intervals[i] ;
-		if(last.end >= cur.start)
-		{
-			intervals[i-1].end = max(intervals[i-1].end,intervals[i].end) ;
-			intervals.erase(i) ;
-			i-- ;
-		}
-	}
-
-	return intervals ;
+static bool cmp(Interval& a, Interval& b) {
+    return a.start > b.start;
 }
+
+class Solution {
+public:
+    vector<Interval> merge(vector<Interval>& intervals) {
+        if(intervals.size() <= 1)
+            return intervals;
+        sort(intervals.begin(), intervals.end(), cmp);
+        vector<Interval> ans;
+        ans.push_back(intervals[i]);
+        for(int i = 1; i < intervals.size(); i++) {
+            if(intervals[i].start <= intervals[i-1].end) {
+                int len = ans.size();
+                ans[len-1].end = intervals[i].end;
+            }
+            else {
+                ans.push_back(intervals[i]);
+            }
+        }
+        return ans;
+    }
+};
